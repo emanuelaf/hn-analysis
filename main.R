@@ -67,8 +67,9 @@ comments_freelance %>%
   dplyr::mutate(seeking = stringr::str_detect(text, regex("seeking work"))) %>% View()
 
 # get rid of useless text
-comments_freelance$text <- stringr::str_replace(comments_freelance$text, "\n", 
-                                                " ")
+comments_freelance$text <- stringr::str_replace(comments_freelance$text, "\n", " ")
+comments_freelance$text <- stringr::str_replace(comments_freelance$text, "<p>", " ")
+
 # harmonise backend
 comments_freelance$text <- stringr::str_replace(comments_freelance$text, "beck", " back ")
 comments_freelance$text <- stringr::str_replace(comments_freelance$text, "back-end", 
@@ -81,13 +82,22 @@ comments_freelance$text <- stringr::str_replace(comments_freelance$text, "backed
                                                 "backend")
 
 # harmonise frontend
-comments_freelance$text <- stringr::str_replace(comments_freelance$text, "front ", 
+comments_freelance$text <- stringr::str_replace(comments_freelance$text, "front end", 
                                                 "frontend")
+
+# harmonise full stack
+comments_freelance$text <- stringr::str_replace(comments_freelance$text, "full stack", 
+                                                "fullstack")
+
+comments_freelance$text <- stringr::str_replace(comments_freelance$text, "full-stack", 
+                                                "fullstack")
 
 # check I have done it right
 comments_freelance %>% 
-  filter(stringr::str_detect(text, regex(" front"))) %>% View()
+  filter(stringr::str_detect(text, regex(" full "))) %>% View()
 
+
+comments_freelance[comments_freelance$id==13773587,]$text
 
 # tidy text
 word_count <- comments_freelance %>%
@@ -108,7 +118,13 @@ words_by_id %>% select(starts_with("front"))
 
 words_by_id %>% select(starts_with("back"))
 
+words_by_id %>% select(starts_with("full"))
 
-#comments_who_is_hiring <- populate_comments(who_is_hiring_march_17_item$kids)
+words_by_id %>% 
+  select(backend, frontend, fullstack) %>% 
+  filter(backend >0 | frontend>0 | fullstack > 0)
+
+
+ #comments_who_is_hiring <- populate_comments(who_is_hiring_march_17_item$kids)
 
 
